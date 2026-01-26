@@ -4,7 +4,8 @@ A lightweight Rust command-line tool for querying Azure Application Insights tel
 
 ## Current Features
 
-- Fetches recent exceptions from Application Insights (last 24 hours)
+- Fetches recent exceptions from Application Insights
+- **Command-line arguments** to configure time range, limit, and exception type filter
 - Displays exception details including timestamp, type, message, and operation name
 - Simple, fast native executable with no runtime dependencies
 
@@ -18,12 +19,18 @@ A lightweight Rust command-line tool for querying Azure Application Insights tel
 
 1. Clone or download this project
 2. Navigate to the project root directory
-3. Build the project:
+3. Install globally:
 
+```bash
+cargo install --path .
+```
+
+This installs the binary to `~/.cargo/bin/` (already in your PATH), so you can run `app-insights-fetcher` from anywhere.
+
+**Alternative:** Build without installing globally:
 ```bash
 cargo build --release
 ```
-
 The compiled executable will be in `target/release/app-insights-fetcher.exe` (Windows) or `target/release/app-insights-fetcher` (Linux/Mac).
 
 ## Configuration
@@ -80,17 +87,29 @@ cargo run
 
 ## Usage
 
-Run from the project root directory:
-
 ```bash
-# Development mode
-cargo run
+# Basic usage (defaults: last 24 hours, limit 50)
+app-insights-fetcher
 
-# Optimized release mode (faster)
-cargo run --release
+# Specify time range
+app-insights-fetcher --hours 48
 
-# Run the compiled binary directly
-./target/release/app-insights-fetcher
+# Limit number of results
+app-insights-fetcher --limit 10
+
+# Filter by exception type
+app-insights-fetcher --type SqlException
+
+# Combine options
+app-insights-fetcher --hours 12 --limit 25 --type NullReferenceException
+
+# Show help
+app-insights-fetcher --help
+```
+
+**Development mode** (if not installed globally):
+```bash
+cargo run -- --hours 48 --limit 10
 ```
 
 ### Sample Output
@@ -131,12 +150,14 @@ app-insights-fetcher/
 
 ## Future Enhancements
 
-### Planned Features
+### Completed
 
-- **Command-line arguments**: Configure time range, limit, and filters
+- [✅] **Command-line arguments**: Configure time range, limit, and filters
   ```bash
   app-insights-fetcher --hours 48 --limit 100 --type SqlException
   ```
+
+### Planned Features
 
 - **Multiple query types**: Support for traces, requests, dependencies, and custom metrics
   ```bash
@@ -247,6 +268,10 @@ MIT License - feel free to use and modify as needed.
 - Your application may not have had exceptions in the last 24 hours (good news!)
 - Verify the correct Application Insights resource is configured
 - Try generating a test exception in your application
+
+### v1.1.0 (2026-01-26)
+- Added command-line arguments (`--hours`, `--limit`, `--type`)
+- Added `clap` dependency for CLI parsing
 
 ### v1.0.0 (2026-01-23)
 - Initial release

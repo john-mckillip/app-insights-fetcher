@@ -36,7 +36,7 @@ impl AppInsightsClient {
         if !response.status().is_success() {
             let status = response.status();
             let text = response.text().await.unwrap_or_default();
-            anyhow::bail!("API request failed with status {}: {}", status, text);
+            anyhow::bail!("API request failed with status {status}: {text}");
         }
 
         response
@@ -45,16 +45,27 @@ impl AppInsightsClient {
             .context("Failed to parse response")
     }
 
-    pub async fn get_recent_exceptions(&self, hours: u32) -> Result<Vec<Exception>> {
+    pub async fn get_recent_exceptions(
+        &self,
+        hours: u32,
+        limit: u32,
+        exception_type: Option<&str>,
+    ) -> Result<Vec<Exception>> {
+        // Build the type filter if provided
+        let type_filter = match exception_type {
+            Some(t) => format!("| where type == \"{t}\""),
+            None => String::new(),
+        };
+
         let query = format!(
             r#"
-            exceptions
-            | where timestamp > ago({}h)
-            | project timestamp, type, outerMessage, operation_Name
-            | order by timestamp desc
-            | limit 50
-            "#,
-            hours
+        exceptions
+        | where timestamp > ago({hours}h)
+        {type_filter}
+        | project timestamp, type, outerMessage, operation_Name
+        | order by timestamp desc
+        | limit {limit}
+        "#
         );
 
         let response = self.query(&query).await?;
