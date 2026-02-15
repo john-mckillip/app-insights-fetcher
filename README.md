@@ -155,7 +155,7 @@ app-insights-fetcher/
 ## Future Enhancements
 
 ### Completed
- 
+
 - [✅] **Command-line arguments**: Configure time range, limit, and filters
   ```bash
   app-insights-fetcher --hours 48 --limit 100 --type SqlException
