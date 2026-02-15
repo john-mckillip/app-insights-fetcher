@@ -50,10 +50,16 @@ impl AppInsightsClient {
         hours: u32,
         limit: u32,
         exception_type: Option<&str>,
+        exception_message: Option<&str>,
     ) -> Result<Vec<Exception>> {
         // Build the type filter if provided
         let type_filter = match exception_type {
             Some(t) => format!("| where type == \"{t}\""),
+            None => String::new(),
+        };
+        // Build the message filter if provided
+        let message_filter: String = match exception_message {
+            Some(m) => format!("| where outerMessage contains \"{m}\""),
             None => String::new(),
         };
 
@@ -62,6 +68,7 @@ impl AppInsightsClient {
         exceptions
         | where timestamp > ago({hours}h)
         {type_filter}
+        {message_filter}
         | project timestamp, type, outerMessage, operation_Name
         | order by timestamp desc
         | limit {limit}

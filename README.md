@@ -100,6 +100,10 @@ app-insights-fetcher --limit 10
 # Filter by exception type
 app-insights-fetcher --type SqlException
 
+# Filter by exception message
+# Works with full and partial matches
+app-insights-fetcher --message "Resolving Dispute for payment intent Id."
+
 # Combine options
 app-insights-fetcher --hours 12 --limit 25 --type NullReferenceException
 
@@ -151,7 +155,7 @@ app-insights-fetcher/
 ## Future Enhancements
 
 ### Completed
-
+ 
 - [✅] **Command-line arguments**: Configure time range, limit, and filters
   ```bash
   app-insights-fetcher --hours 48 --limit 100 --type SqlException
@@ -268,6 +272,11 @@ MIT License - feel free to use and modify as needed.
 - Your application may not have had exceptions in the last 24 hours (good news!)
 - Verify the correct Application Insights resource is configured
 - Try generating a test exception in your application
+
+## 📋 Changelog
+
+### v1.2.0 (2026-02-15)
+- Added command-line-argument (`--message`)
 
 ### v1.1.0 (2026-01-26)
 - Added command-line arguments (`--hours`, `--limit`, `--type`)
