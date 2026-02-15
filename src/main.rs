@@ -22,6 +22,10 @@ struct Cli {
     /// Filter by exception type (e.g., SqlException)
     #[arg(short = 't', long = "type")]
     exception_type: Option<String>,
+
+    /// Filter by exception message
+    #[arg(short = 'm', long = "message")]
+    exception_message: Option<String>,
 }
 
 #[tokio::main]
@@ -42,7 +46,7 @@ async fn main() -> Result<()> {
 
     let client = AppInsightsClient::new(app_id, api_key);
     let exceptions = client
-        .get_recent_exceptions(cli.hours, cli.limit, cli.exception_type.as_deref())
+        .get_recent_exceptions(cli.hours, cli.limit, cli.exception_type.as_deref(), cli.exception_message.as_deref())
         .await?;
 
     if exceptions.is_empty() {
