@@ -276,7 +276,7 @@ MIT License - feel free to use and modify as needed.
 ## 📋 Changelog
 
 ### v1.2.0 (2026-02-15)
-- Added command-line-argument (`--message`)
+- Added command-line argument (`--message`)
 
 ### v1.1.0 (2026-01-26)
 - Added command-line arguments (`--hours`, `--limit`, `--type`)

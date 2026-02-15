@@ -18,6 +18,14 @@ impl AppInsightsClient {
         }
     }
 
+    fn escape_kql_string(s: &str) -> String {
+    s.replace('\\', "\\\\")
+        .replace('"', "\\\"")
+        .replace('\n', "\\n")
+        .replace('\r', "\\r")
+        .replace('\t', "\\t")
+    }
+
     async fn query(&self, kusto_query: &str) -> Result<QueryResponse> {
         let url = format!(
             "https://api.applicationinsights.io/v1/apps/{}/query",
@@ -54,12 +62,12 @@ impl AppInsightsClient {
     ) -> Result<Vec<Exception>> {
         // Build the type filter if provided
         let type_filter = match exception_type {
-            Some(t) => format!("| where type == \"{t}\""),
+            Some(t) => format!("| where type == \"{}\"", Self::escape_kql_string(t)),
             None => String::new(),
         };
         // Build the message filter if provided
         let message_filter: String = match exception_message {
-            Some(m) => format!("| where outerMessage contains \"{m}\""),
+            Some(m) => format!("| where outerMessage contains \"{}\"", Self::escape_kql_string(m)),
             None => String::new(),
         };
 
